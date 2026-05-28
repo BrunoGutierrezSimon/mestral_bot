@@ -1,0 +1,37 @@
+# Workflow de GitHub Actions para enviar el parte diario a las 8:00
+name: Parte Diario Mestral
+
+on:
+  schedule:
+    # Cron: minuto hora día mes día_semana (en UTC)
+    # 8:00 hora Madrid = 6:00 UTC en invierno / 7:00 UTC en verano
+    # Usamos 6:00 UTC para que funcione todo el año
+    - cron: '0 6 * * *'
+  # Permite ejecutarlo manualmente desde GitHub para probar
+  workflow_dispatch:
+
+jobs:
+  enviar_parte:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descarga el código del repositorio
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      # 2. Instala Python
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. Instala las librerías necesarias
+      - name: Instalar dependencias
+        run: pip install python-telegram-bot python-dotenv requests
+
+      # 4. Ejecuta el script del parte diario
+      - name: Enviar parte diario
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python parte_diario.py
