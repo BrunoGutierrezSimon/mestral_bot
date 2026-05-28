@@ -1,0 +1,7 @@
+# Secretos — nunca subir a GitHub
+.env
+
+# Archivos que genera Python automáticamente — no necesarios
+__pycache__/
+*.pyc
+*.pyo
